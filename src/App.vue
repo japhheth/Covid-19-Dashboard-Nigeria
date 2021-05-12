@@ -1,19 +1,51 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <covid-stats
+      :casesOnAdmission="casesOnAdmission"
+      :confirmedCases="confirmedCases"
+      :death="death"
+      :discharged="discharged"
+    />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import CovidStats from "./components/covid-stats.vue";
+import axios from "axios";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    CovidStats,
+  },
+  data: () => ({
+    baseUrl: "https://covidnigeria.herokuapp.com/api",
+    casesOnAdmission: [],
+    confirmedCases: [],
+    death: [],
+    discharged: [],
+  }),
+  async created() {
+    await axios
+      .get(`${this.baseUrl}`)
+      .then((response) => {
+        const { states } = response.data.data;
+        states.forEach((items) => {
+          const {
+            casesOnAdmission,
+            confirmedCases,
+            discharged,
+            death,
+            state,
+          } = items;
+          this.casesOnAdmission.push({ total: casesOnAdmission, state });
+          this.confirmedCases.push({ total: confirmedCases, state });
+          this.death.push({ total: death, state });
+          this.discharged.push({ total: discharged, state });
+        });
+      })
+      .catch((err) => console.log(err));
+  },
+};
 </script>
 
 <style>
