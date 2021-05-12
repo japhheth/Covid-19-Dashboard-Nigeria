@@ -12,11 +12,15 @@ export default {
     options: {
       type: Object,
     },
+    chartColors: {
+        type: Object
+    }
   },
   mounted() {
     const states = this.chartData.map((item) => item.state);
     const total = this.chartData.map((item) => item.total);
-
+    console.log(this.chartColors, 'checking')
+    const {borderColor, pointBorderColor, pointBackgroundColor, backgroundColor} = this.chartColors
     this.renderChart(
       {
         labels: states,
@@ -24,6 +28,10 @@ export default {
           {
             label: this.label,
             data: total,
+            borderColor: borderColor,
+            pointBorderColor: pointBorderColor,
+            pointBackgroundColor: pointBackgroundColor,
+            backgroundColor: backgroundColor
           },
         ]
       },
